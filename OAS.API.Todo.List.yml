@@ -1,0 +1,557 @@
+openapi: 3.0.0
+info:
+  title: To-Do List API
+  description: API untuk mengelola daftar tugas dan tugas-tugas di dalamnya.
+  version: 1.0.0
+servers:
+  - url: https://api.yourdomain.com/v1 # Ganti dengan URL dasar API Anda
+    description: Production server
+  - url: http://localhost:3000/v1 # Ganti dengan URL lokal development Anda
+    description: Local development server
+
+security:
+  - bearerAuth: []
+
+paths:
+  /auth/register:
+    post:
+      summary: Mendaftarkan pengguna baru
+      description: Endpoint untuk mendaftarkan pengguna baru ke sistem.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  description: Nama pengguna unik.
+                  example: userbaru
+                password:
+                  type: string
+                  format: password
+                  description: Kata sandi pengguna.
+                  example: StrongPassword123
+      responses:
+        '201':
+          description: Pengguna berhasil didaftarkan.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User registered successfully.
+                  userId:
+                    type: string
+                    example: 654321abcdef
+        '400':
+          description: Permintaan tidak valid (misalnya, nama pengguna sudah ada).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Username already exists.
+        '500':
+          description: Kesalahan server internal.
+
+  /auth/login:
+    post:
+      summary: Login pengguna
+      description: Endpoint untuk login pengguna dan mendapatkan bearer token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  description: Nama pengguna.
+                  example: userbaru
+                password:
+                  type: string
+                  format: password
+                  description: Kata sandi.
+                  example: StrongPassword123
+      responses:
+        '200':
+          description: Login berhasil. Mengembalikan bearer token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Login successful.
+                  token:
+                    type: string
+                    description: Bearer token untuk autentikasi.
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+        '401':
+          description: Kredensial tidak valid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid username or password.
+        '500':
+          description: Kesalahan server internal.
+
+  /lists:
+    get:
+      summary: Mendapatkan semua daftar tugas pengguna
+      description: Mengambil semua daftar tugas yang dimiliki oleh pengguna yang terautentikasi.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Daftar tugas berhasil diambil.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/List'
+              examples:
+                successResponse:
+                  value:
+                    - id: list123
+                      name: Belanja Mingguan
+                      userId: user123
+                    - id: list456
+                      name: Proyek Kantor
+                      userId: user123
+        '401':
+          description: Tidak terautentikasi. Token tidak ada atau tidak valid.
+        '500':
+          description: Kesalahan server internal.
+    post:
+      summary: Membuat daftar tugas baru
+      description: Membuat daftar tugas baru untuk pengguna yang terautentikasi.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  description: Nama daftar tugas.
+                  example: Tugas Rumah
+      responses:
+        '201':
+          description: Daftar tugas berhasil dibuat.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/List'
+              examples:
+                successResponse:
+                  value:
+                    id: newlist789
+                    name: Tugas Rumah
+                    userId: user123
+        '400':
+          description: Permintaan tidak valid.
+        '401':
+          description: Tidak terautentikasi.
+        '500':
+          description: Kesalahan server internal.
+
+  /lists/{listId}:
+    get:
+      summary: Mendapatkan daftar tugas berdasarkan ID
+      description: Mengambil detail daftar tugas tertentu berdasarkan ID-nya.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: listId
+          required: true
+          schema:
+            type: string
+          description: ID daftar tugas.
+          example: list123
+      responses:
+        '200':
+          description: Detail daftar tugas berhasil diambil.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/List'
+              examples:
+                successResponse:
+                  value:
+                    id: list123
+                    name: Belanja Mingguan
+                    userId: user123
+        '401':
+          description: Tidak terautentikasi.
+        '403':
+          description: Tidak diizinkan. Pengguna tidak memiliki akses ke daftar ini.
+        '404':
+          description: Daftar tugas tidak ditemukan.
+        '500':
+          description: Kesalahan server internal.
+    put:
+      summary: Memperbarui daftar tugas
+      description: Memperbarui nama daftar tugas tertentu.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: listId
+          required: true
+          schema:
+            type: string
+          description: ID daftar tugas.
+          example: list123
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  description: Nama baru untuk daftar tugas.
+                  example: Belanja Bulanan
+      responses:
+        '200':
+          description: Daftar tugas berhasil diperbarui.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/List'
+              examples:
+                successResponse:
+                  value:
+                    id: list123
+                    name: Belanja Bulanan
+                    userId: user123
+        '400':
+          description: Permintaan tidak valid.
+        '401':
+          description: Tidak terautentikasi.
+        '403':
+          description: Tidak diizinkan.
+        '404':
+          description: Daftar tugas tidak ditemukan.
+        '500':
+          description: Kesalahan server internal.
+    delete:
+      summary: Menghapus daftar tugas
+      description: Menghapus daftar tugas tertentu dan semua tugas di dalamnya.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: listId
+          required: true
+          schema:
+            type: string
+          description: ID daftar tugas.
+          example: list123
+      responses:
+        '204':
+          description: Daftar tugas berhasil dihapus. (No Content)
+        '401':
+          description: Tidak terautentikasi.
+        '403':
+          description: Tidak diizinkan.
+        '404':
+          description: Daftar tugas tidak ditemukan.
+        '500':
+          description: Kesalahan server internal.
+
+  /lists/{listId}/tasks:
+    get:
+      summary: Mendapatkan semua tugas dalam daftar
+      description: Mengambil semua tugas yang terkait dengan daftar tugas tertentu.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: listId
+          required: true
+          schema:
+            type: string
+          description: ID daftar tugas.
+          example: list123
+      responses:
+        '200':
+          description: Tugas berhasil diambil.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+              examples:
+                successResponse:
+                  value:
+                    - id: taskA1
+                      listId: list123
+                      description: Beli susu
+                      completed: false
+                    - id: taskB2
+                      listId: list123
+                      description: Siapkan makan malam
+                      completed: true
+        '401':
+          description: Tidak terautentikasi.
+        '403':
+          description: Tidak diizinkan.
+        '404':
+          description: Daftar tugas tidak ditemukan.
+        '500':
+          description: Kesalahan server internal.
+    post:
+      summary: Menambahkan tugas baru ke daftar
+      description: Menambahkan tugas baru ke daftar tugas tertentu.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: listId
+          required: true
+          schema:
+            type: string
+          description: ID daftar tugas.
+          example: list123
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - description
+              properties:
+                description:
+                  type: string
+                  description: Deskripsi tugas.
+                  example: Kirim email ke tim
+                completed:
+                  type: boolean
+                  description: Status penyelesaian tugas. Default ke false.
+                  default: false
+      responses:
+        '201':
+          description: Tugas berhasil dibuat.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+              examples:
+                successResponse:
+                  value:
+                    id: newtaskC3
+                    listId: list123
+                    description: Kirim email ke tim
+                    completed: false
+        '400':
+          description: Permintaan tidak valid.
+        '401':
+          description: Tidak terautentikasi.
+        '403':
+          description: Tidak diizinkan.
+        '404':
+          description: Daftar tugas tidak ditemukan.
+        '500':
+          description: Kesalahan server internal.
+
+  /tasks/{taskId}:
+    get:
+      summary: Mendapatkan tugas berdasarkan ID
+      description: Mengambil detail tugas tertentu berdasarkan ID-nya.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: taskId
+          required: true
+          schema:
+            type: string
+          description: ID tugas.
+          example: taskA1
+      responses:
+        '200':
+          description: Detail tugas berhasil diambil.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+              examples:
+                successResponse:
+                  value:
+                    id: taskA1
+                    listId: list123
+                    description: Beli susu
+                    completed: false
+        '401':
+          description: Tidak terautentikasi.
+        '403':
+          description: Tidak diizinkan. Pengguna tidak memiliki akses ke tugas ini.
+        '404':
+          description: Tugas tidak ditemukan.
+        '500':
+          description: Kesalahan server internal.
+    put:
+      summary: Memperbarui tugas
+      description: Memperbarui deskripsi atau status penyelesaian tugas tertentu.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: taskId
+          required: true
+          schema:
+            type: string
+          description: ID tugas.
+          example: taskA1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                  description: Deskripsi tugas yang diperbarui.
+                  example: Beli susu dan roti
+                completed:
+                  type: boolean
+                  description: Status penyelesaian tugas yang diperbarui.
+                  example: true
+      responses:
+        '200':
+          description: Tugas berhasil diperbarui.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+              examples:
+                successResponse:
+                  value:
+                    id: taskA1
+                    listId: list123
+                    description: Beli susu dan roti
+                    completed: true
+        '400':
+          description: Permintaan tidak valid.
+        '401':
+          description: Tidak terautentikasi.
+        '403':
+          description: Tidak diizinkan.
+        '404':
+          description: Tugas tidak ditemukan.
+        '500':
+          description: Kesalahan server internal.
+    delete:
+      summary: Menghapus tugas
+      description: Menghapus tugas tertentu.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: taskId
+          required: true
+          schema:
+            type: string
+          description: ID tugas.
+          example: taskA1
+      responses:
+        '204':
+          description: Tugas berhasil dihapus. (No Content)
+        '401':
+          description: Tidak terautentikasi.
+        '403':
+          description: Tidak diizinkan.
+        '404':
+          description: Tugas tidak ditemukan.
+        '500':
+          description: Kesalahan server internal.
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Autentikasi dengan JSON Web Token (JWT) yang diperoleh dari endpoint login.
+  schemas:
+    List:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID unik daftar tugas.
+          readOnly: true
+          example: list123
+        name:
+          type: string
+          description: Nama daftar tugas.
+          example: Belanja Mingguan
+        userId:
+          type: string
+          description: ID pengguna yang memiliki daftar ini.
+          readOnly: true
+          example: user123
+      required:
+        - id
+        - name
+        - userId
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID unik tugas.
+          readOnly: true
+          example: taskA1
+        listId:
+          type: string
+          description: ID daftar tugas tempat tugas ini berada.
+          readOnly: true
+          example: list123
+        description:
+          type: string
+          description: Deskripsi tugas.
+          example: Beli susu
+        completed:
+          type: boolean
+          description: Menunjukkan apakah tugas sudah selesai.
+          default: false
+          example: false
+      required:
+        - id
+        - listId
+        - description
+        - completed

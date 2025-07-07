@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://yourdomain.com/sitemap.xml
+
+# Disallow admin or private areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_internal/
+
+# Allow all public assets
+Allow: /assets/
+Allow: /favicon.ico
+Allow: /robots.txt

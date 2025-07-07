@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List - PT Erajaya Swasembada</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="loading-overlay hidden">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Navigation Header -->
+    <nav id="navbar" class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <img src="assets/images/logo.png" alt="PT Erajaya" class="brand-logo">
+                <span class="brand-text">Todo List</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <div class="nav-links">
+                    <a href="#dashboard" class="nav-link active" data-page="dashboard">
+                        <i class="fas fa-home"></i>
+                        Dashboard
+                    </a>
+                    <a href="#lists" class="nav-link" data-page="lists">
+                        <i class="fas fa-list"></i>
+                        Lists
+                    </a>
+                    <a href="#profile" class="nav-link" data-page="profile">
+                        <i class="fas fa-user"></i>
+                        Profile
+                    </a>
+                </div>
+                <div class="nav-actions">
+                    <button class="btn-icon" id="theme-toggle" title="Toggle Theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="user-menu">
+                        <button class="user-menu-btn" id="user-menu-btn">
+                            <img src="assets/images/default-avatar.png" alt="User" class="user-avatar">
+                            <span class="user-name" id="user-name">User</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="user-dropdown" id="user-dropdown">
+                            <a href="#" class="dropdown-item" id="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="nav-toggle" id="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- Authentication Page -->
+        <div id="auth-page" class="page-container active">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <img src="assets/images/logo.png" alt="PT Erajaya" class="auth-logo">
+                        <h1 class="auth-title">Todo List Manager</h1>
+                        <p class="auth-subtitle">PT Erajaya Swasembada</p>
+                    </div>
+
+                    <!-- Login Form -->
+                    <form id="login-form" class="auth-form active">
+                        <h2 class="form-title">Sign In</h2>
+                        <div class="form-group">
+                            <label for="login-email">Email</label>
+                            <input type="email" id="login-email" name="email" required 
+                                   placeholder="Enter your email">
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Password</label>
+                            <div class="password-input">
+                                <input type="password" id="login-password" name="password" required 
+                                       placeholder="Enter your password">
+                                <button type="button" class="password-toggle" data-target="login-password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary btn-full">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Sign In
+                        </button>
+                        <p class="form-switch">
+                            Don't have an account? 
+                            <a href="#" id="show-register">Sign up here</a>
+                        </p>
+                    </form>
+
+                    <!-- Register Form -->
+                    <form id="register-form" class="auth-form">
+                        <h2 class="form-title">Create Account</h2>
+                        <div class="form-group">
+                            <label for="register-email">Email</label>
+                            <input type="email" id="register-email" name="email" required 
+                                   placeholder="Enter your email">
+                        </div>
+                        <div class="form-group">
+                            <label for="register-username">Username (Optional)</label>
+                            <input type="text" id="register-username" name="username" 
+                                   placeholder="Enter username">
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password">Password</label>
+                            <div class="password-input">
+                                <input type="password" id="register-password" name="password" required 
+                                       placeholder="Enter your password">
+                                <button type="button" class="password-toggle" data-target="register-password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="password-requirements">
+                                <small>Password must be at least 10 characters with letters, numbers, and special characters.</small>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary btn-full">
+                            <i class="fas fa-user-plus"></i>
+                            Create Account
+                        </button>
+                        <p class="form-switch">
+                            Already have an account? 
+                            <a href="#" id="show-login">Sign in here</a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Page -->
+        <div id="dashboard-page" class="page-container">
+            <div class="page-header">
+                <h1 class="page-title">Dashboard</h1>
+                <p class="page-subtitle">Overview of your todo lists and tasks</p>
+            </div>
+
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-list"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-number" id="total-lists">0</h3>
+                        <p class="stat-label">Total Lists</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-number" id="total-tasks">0</h3>
+                        <p class="stat-label">Total Tasks</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-number" id="completed-tasks">0</h3>
+                        <p class="stat-label">Completed</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-number" id="pending-tasks">0</h3>
+                        <p class="stat-label">Pending</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+                <div class="recent-lists">
+                    <div class="section-header">
+                        <h2 class="section-title">Recent Lists</h2>
+                        <button class="btn-secondary" id="create-list-btn">
+                            <i class="fas fa-plus"></i>
+                            New List
+                        </button>
+                    </div>
+                    <div id="recent-lists-container" class="lists-grid">
+                        <!-- Recent lists will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lists Page -->
+        <div id="lists-page" class="page-container">
+            <div class="page-header">
+                <h1 class="page-title">Todo Lists</h1>
+                <button class="btn-primary" id="create-list-btn-2">
+                    <i class="fas fa-plus"></i>
+                    Create New List
+                </button>
+            </div>
+
+            <div class="lists-container">
+                <div id="lists-grid" class="lists-grid">
+                    <!-- Lists will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Page -->
+        <div id="profile-page" class="page-container">
+            <div class="page-header">
+                <h1 class="page-title">Profile</h1>
+                <p class="page-subtitle">Manage your account settings</p>
+            </div>
+
+            <div class="profile-container">
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <img src="assets/images/default-avatar.png" alt="Profile" class="profile-avatar">
+                        <div class="profile-info">
+                            <h2 id="profile-name">User Name</h2>
+                            <p id="profile-email">user@example.com</p>
+                            <span class="profile-badge">Verified</span>
+                        </div>
+                    </div>
+
+                    <form id="profile-form" class="profile-form">
+                        <div class="form-group">
+                            <label for="profile-username">Username</label>
+                            <input type="text" id="profile-username" name="username" 
+                                   placeholder="Enter username">
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-email-input">Email</label>
+                            <input type="email" id="profile-email-input" name="email" required 
+                                   placeholder="Enter email">
+                        </div>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i>
+                            Update Profile
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <!-- Create/Edit List Modal -->
+    <div id="list-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="list-modal-title">Create New List</h2>
+                <button class="modal-close" id="list-modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="list-form" class="modal-form">
+                <div class="form-group">
+                    <label for="list-name">List Name</label>
+                    <input type="text" id="list-name" name="name" required 
+                           placeholder="Enter list name">
+                </div>
+                <div class="form-group">
+                    <label for="list-description">Description</label>
+                    <textarea id="list-description" name="description" 
+                              placeholder="Enter list description" rows="3"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" id="list-form-cancel">Cancel</button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i>
+                        Save List
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- List Detail Modal -->
+    <div id="list-detail-modal" class="modal modal-large">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="list-header-info">
+                    <h2 class="modal-title" id="list-detail-title">List Name</h2>
+                    <p class="list-description" id="list-detail-description">List description</p>
+                </div>
+                <div class="list-actions">
+                    <button class="btn-icon" id="edit-list-btn" title="Edit List">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon btn-danger" id="delete-list-btn" title="Delete List">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <button class="modal-close" id="list-detail-close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="task-section">
+                    <div class="section-header">
+                        <h3 class="section-title">Tasks</h3>
+                        <button class="btn-primary" id="add-task-btn">
+                            <i class="fas fa-plus"></i>
+                            Add Task
+                        </button>
+                    </div>
+                    <div id="tasks-container" class="tasks-list">
+                        <!-- Tasks will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Task Modal -->
+    <div id="task-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="task-modal-title">Add New Task</h2>
+                <button class="modal-close" id="task-modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="task-form" class="modal-form">
+                <div class="form-group">
+                    <label for="task-name">Task Name</label>
+                    <input type="text" id="task-name" name="name" required 
+                           placeholder="Enter task name">
+                </div>
+                <div class="form-group">
+                    <label for="task-description">Description</label>
+                    <textarea id="task-description" name="description" 
+                              placeholder="Enter task description" rows="3"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="task-priority">Priority</label>
+                        <select id="task-priority" name="priority">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-due-date">Due Date</label>
+                        <input type="date" id="task-due-date" name="due_date">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" id="task-form-cancel">Cancel</button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i>
+                        Save Task
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/components/modal.js"></script>
+    <script src="assets/js/components/toast.js"></script>
+    <script src="assets/js/components/list-card.js"></script>
+    <script src="assets/js/components/task-item.js"></script>
+    <script src="assets/js/pages/dashboard.js"></script>
+    <script src="assets/js/pages/lists.js"></script>
+    <script src="assets/js/pages/profile.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

@@ -10,7 +10,23 @@ Base.metadata.create_all(bind=engine)
 # Initialize FastAPI app
 app = FastAPI(
     title=settings.app_name,
-    description="API untuk mengelola daftar tugas dan tugas-tugas di dalamnya.",
+    description="""
+    API RESTful untuk mengelola daftar tugas dan tugas-tugas di dalamnya.
+    
+    ## Authentication
+    
+    API ini mendukung dua metode autentikasi:
+    
+    * **Bearer Token Authentication**: Gunakan JWT token yang diperoleh dari endpoint login
+    * **Basic Authentication**: Gunakan email dan password langsung (untuk testing dan development)
+    
+    ## Features
+    
+    * User registration dengan email dan password validation
+    * Secure JWT token authentication
+    * CRUD operations untuk lists dan tasks
+    * User-specific data isolation
+    """,
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc"
@@ -39,6 +55,10 @@ def read_root():
     return {
         "message": f"Welcome to {settings.app_name}",
         "version": "1.0.0",
+        "authentication": {
+            "bearer_token": "Use JWT token from /v1/auth/login",
+            "basic_auth": "Use email:password for direct authentication"
+        },
         "docs": "/docs",
         "redoc": "/redoc"
     }

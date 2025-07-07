@@ -1,0 +1,21 @@
+
+## Pair Programming Prompt: Authentication Expansion
+
+In this project, in addition to the existing bearer token authentication, add sign-up and login features using email and password with the following requirements:
+1. Email and Password Validation:
+   a. Email: Must be a valid email format.
+   b. Password: Minimum complexity of 10 characters, alphanumeric with at least one special character.
+2. Endpoint Authentication: Ensure all existing endpoints in this project can be authenticated using either the existing bearer token or the new email and password authentication method.
+3. Update documentations: Readme, API documentation and openapi.json.
+
+---
+## Pair Programming Prompt: Senior Frontend Engineer - Responsive Web Pages
+
+As a Senior Frontend Engineer on this project, your task is to develop responsive web pages for each of the provided API endpoints that require a user interface.
+Here are the key requirements:
+1. Project Structure: Organize folders and files following common and best practice structures for maintainability and scalability.
+2. Branding: Implement PT Erajaya Swasembada Corporate Colors as the primary theme for all UI elements.
+3. Component Reusability: Utilize UI components as much as possible to ensure consistency, reduce development time, and improve maintainability.
+4. Documentation: Provide comprehensive documentation for the developed components and pages, including usage instructions and any relevant technical details.
+
+---

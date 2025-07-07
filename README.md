@@ -5,9 +5,11 @@ API RESTful untuk mengelola daftar tugas dan tugas-tugas di dalamnya, dibangun d
 ## Fitur
 
 - **Authentication & Authorization**
-  - User registration
+  - User registration dengan email dan password validation
   - User login dengan JWT token
   - Bearer token authentication
+  - Basic authentication (email/password) untuk testing
+  - Dual authentication support (Bearer token atau Basic auth)
 
 - **Lists Management**
   - Membuat, membaca, mengupdate, dan menghapus daftar tugas
@@ -26,6 +28,27 @@ API RESTful untuk mengelola daftar tugas dan tugas-tugas di dalamnya, dibangun d
 - **JWT** - JSON Web Tokens untuk authentication
 - **Pydantic** - Data validation menggunakan Python type hints
 - **Uvicorn** - ASGI web server
+- **Email Validator** - Email format validation
+
+## Authentication Methods
+
+API ini mendukung dua metode autentikasi:
+
+### 1. Bearer Token Authentication (Recommended)
+- Dapatkan JWT token dari endpoint `/v1/auth/login`
+- Gunakan token di header: `Authorization: Bearer YOUR_JWT_TOKEN`
+
+### 2. Basic Authentication (Testing/Development)
+- Gunakan email dan password langsung
+- Format: `Authorization: Basic base64(email:password)`
+
+## Password Requirements
+
+Password harus memenuhi kriteria berikut:
+- **Minimum 10 karakter**
+- **Mengandung huruf** (A-Z, a-z)
+- **Mengandung angka** (0-9)
+- **Mengandung minimal 1 karakter spesial** (!@#$%^&*(),.?":{}|<>)
 
 ## Instalasi
 
@@ -83,8 +106,9 @@ Setelah aplikasi berjalan, Anda dapat mengakses:
 
 ### Authentication
 
-- `POST /v1/auth/register` - Mendaftarkan pengguna baru
-- `POST /v1/auth/login` - Login dan mendapatkan JWT token
+- `POST /v1/auth/register` - Mendaftarkan pengguna baru dengan email dan password
+- `POST /v1/auth/login` - Login dengan email dan password, mendapatkan JWT token
+- `POST /v1/auth/login-username` - Login dengan username dan password (backward compatibility)
 
 ### Lists
 
@@ -104,29 +128,30 @@ Setelah aplikasi berjalan, Anda dapat mengakses:
 
 ## Contoh Penggunaan
 
-### 1. Register User
+### 1. Register User dengan Email
 
 ```bash
 curl -X POST "http://localhost:3000/v1/auth/register" \
   -H "Content-Type: application/json" \
   -d '{
-    "username": "testuser",
-    "password": "testpassword123"
+    "email": "user@example.com",
+    "password": "StrongPass123!",
+    "username": "testuser"
   }'
 ```
 
-### 2. Login
+### 2. Login dengan Email
 
 ```bash
 curl -X POST "http://localhost:3000/v1/auth/login" \
   -H "Content-Type: application/json" \
   -d '{
-    "username": "testuser",
-    "password": "testpassword123"
+    "email": "user@example.com",
+    "password": "StrongPass123!"
   }'
 ```
 
-### 3. Create List (dengan Bearer token)
+### 3. Create List dengan Bearer Token
 
 ```bash
 curl -X POST "http://localhost:3000/v1/lists" \
@@ -137,7 +162,18 @@ curl -X POST "http://localhost:3000/v1/lists" \
   }'
 ```
 
-### 4. Add Task to List
+### 4. Create List dengan Basic Auth (Email/Password)
+
+```bash
+curl -X POST "http://localhost:3000/v1/lists" \
+  -H "Content-Type: application/json" \
+  -u "user@example.com:StrongPass123!" \
+  -d '{
+    "name": "Shopping List"
+  }'
+```
+
+### 5. Add Task to List
 
 ```bash
 curl -X POST "http://localhost:3000/v1/lists/{listId}/tasks" \
@@ -190,32 +226,85 @@ todo-list-api/
 
 ## Testing
 
-Untuk menjalankan tests:
+### Automated Testing
+Untuk menjalankan unit tests:
 
 ```bash
 pytest
+```
+
+### Manual API Testing
+Untuk testing manual API dengan email authentication:
+
+```bash
+# Install requests library first
+pip install requests
+
+# Run test script
+python test_api.py
+```
+
+### Testing dengan Swagger UI
+1. Jalankan aplikasi: `uvicorn app.main:app --reload --port 3000`
+2. Buka: http://localhost:3000/docs
+3. Klik "Authorize" dan pilih salah satu metode:
+   - **Bearer Token**: Masukkan JWT token dari login
+   - **Basic Auth**: Masukkan email dan password langsung
+
+## Database Migration
+
+Jika Anda mengupgrade dari versi sebelumnya, jalankan migration script:
+
+```bash
+python migrate_db.py
 ```
 
 ## Production Deployment
 
 1. **Setup database** (PostgreSQL recommended)
 2. **Update environment variables** untuk production
-3. **Deploy menggunakan** Docker, Heroku, atau cloud provider lainnya
+3. **Generate secure SECRET_KEY**:
+   ```python
+   import secrets
+   print(secrets.token_urlsafe(32))
+   ```
+4. **Deploy menggunakan** Docker, Heroku, atau cloud provider lainnya
 
 ### Docker Deployment
 
 ```dockerfile
 # Dockerfile example
-FROM python:3.9
+FROM python:3.9-slim
 
 WORKDIR /app
 
+# Install dependencies
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy application
 COPY . .
 
+# Create non-root user
+RUN useradd --create-home --shell /bin/bash appuser
+RUN chown -R appuser:appuser /app
+USER appuser
+
+# Expose port
+EXPOSE 3000
+
+# Run application
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "3000"]
+```
+
+### Environment Variables untuk Production
+
+```env
+DATABASE_URL=postgresql://user:password@db:5432/todoapi
+SECRET_KEY=your-super-secure-secret-key-here
+DEBUG=False
+API_V1_PREFIX=/v1
+ACCESS_TOKEN_EXPIRE_MINUTES=60
 ```
 
 ## Contributing

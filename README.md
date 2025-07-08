@@ -318,3 +318,30 @@ ACCESS_TOKEN_EXPIRE_MINUTES=60
 ## License
 
 This project is licensed under the MIT License.
+
+Changes Committed (2025-07-07):
+1. Enhanced Authentication System
+✅ Added dual authentication (Bearer token + Basic auth)
+✅ Updated user model for email-based authentication
+✅ Enhanced password validation (min 10 chars, alphanumeric + special)
+✅ Modified auth service and dependencies
+2. Updated Documentation
+✅ Updated OpenAPI specifications in openapi.json
+✅ Enhanced README.md with new authentication details
+✅ Added comprehensive API documentation
+3. Complete Frontend Application
+✅ Created responsive web pages in frontend directory
+✅ Implemented PT Erajaya Swasembada corporate branding
+✅ Built modular component-based architecture
+✅ Added 25+ frontend files including:
+HTML, CSS, and JavaScript files
+Reusable UI components
+Page controllers
+Configuration files
+Build and deployment scripts
+Comprehensive documentation
+4. Testing and Development Tools
+✅ Added testing scripts (test_api.py)
+✅ Created database migration script (migrate_db.py)
+✅ Built frontend build script with environment support
+✅ Added linting and code quality tools

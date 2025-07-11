@@ -473,3 +473,56 @@ ACCESS_TOKEN_EXPIRE_MINUTES=60
 ## License
 
 This project is licensed under the MIT License.
+
+---
+
+## Changes Committed (2025-07-07):
+
+## 1. Enhanced Authentication System
+
+Our authentication system has been significantly upgraded to provide stronger security and more flexible user management.
+
+* **Dual Authentication Support:** Now supports both **Bearer Token** and **Basic Authentication**, offering more options for secure access.
+* **Email-Based User Model:** The user model has been updated to use **email addresses** for authentication, streamlining the login process.
+* **Stronger Password Validation:** Passwords now require a minimum of **10 characters**, including a mix of **alphanumeric characters and special symbols**, to enhance security.
+* **Auth Service Refinements:** The authentication service and its dependencies have been modified to support these new features seamlessly.
+
+---
+
+## 2. Updated Documentation
+
+Comprehensive documentation updates ensure that all new features and changes are clearly explained and easy to understand.
+
+* **OpenAPI Specification Updates:** The `openapi.json` file has been thoroughly updated to reflect all changes in the API, providing accurate and up-to-date API specifications.
+* **Enhanced `README.md`:** This `README.md` file now includes **detailed information about the new authentication methods** and other key updates.
+* **Comprehensive API Documentation:** We've added **extensive API documentation** to help developers integrate with our services more efficiently.
+
+---
+
+## 3. Complete Frontend Application
+
+A fully functional and responsive frontend application has been developed and integrated.
+
+* **Responsive Web Pages:** All web pages are now **responsive**, ensuring an optimal viewing experience across various devices. The frontend code is located in the `frontend/` directory.
+* **Corporate Branding:** The application fully implements **PT Erajaya Swasembada corporate branding**, providing a consistent and professional user interface.
+* **Modular Architecture:** Built with a **modular, component-based architecture**, allowing for easier maintenance and scalability.
+* **Extensive Frontend Files:** Over **25 new frontend files** have been added, including:
+    * HTML, CSS, and JavaScript files
+    * Reusable UI components
+    * Page controllers
+    * Configuration files
+    * Build and deployment scripts
+    * Comprehensive frontend documentation
+
+---
+
+## 4. Testing and Development Tools
+
+New tools have been introduced to streamline testing, database management, and code quality.
+
+* **Automated Testing Scripts:** Added `test_api.py` for **robust API testing**, ensuring reliability and performance.
+* **Database Migration Script:** A new `migrate_db.py` script simplifies **database schema updates and management**.
+* **Frontend Build Script:** Implemented a **frontend build script with environment support**, facilitating development and deployment across different environments.
+* **Linting and Code Quality Tools:** Integrated **linting and code quality tools** to maintain high coding standards and reduce errors.
+
+---

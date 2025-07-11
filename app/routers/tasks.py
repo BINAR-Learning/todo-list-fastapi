@@ -1,11 +1,13 @@
+from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from typing import List
+
 from app.database import get_db
-from app.schemas.task import TaskCreate, TaskUpdate, TaskResponse
+from app.models.user import User
+from app.schemas.task import TaskCreate, TaskResponse, TaskUpdate
 from app.services.task_service import TaskService
 from app.utils.dependencies import get_current_active_user
-from app.models.user import User
 
 router = APIRouter(tags=["tasks"])
 

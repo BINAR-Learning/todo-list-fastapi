@@ -1,17 +1,19 @@
-from fastapi import Depends, HTTPException, status, Request
+import base64
+from typing import Optional, Union
+
+from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import (
-    HTTPBearer,
     HTTPAuthorizationCredentials,
     HTTPBasic,
     HTTPBasicCredentials,
+    HTTPBearer,
 )
 from sqlalchemy.orm import Session
+
 from app.database import get_db
-from app.utils.security import verify_token, verify_password
 from app.models.user import User
 from app.services.auth_service import AuthService
-from typing import Optional, Union
-import base64
+from app.utils.security import verify_password, verify_token
 
 # HTTP Bearer token scheme
 security_bearer = HTTPBearer(auto_error=False)

@@ -1,11 +1,13 @@
+from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from typing import List
+
 from app.database import get_db
-from app.schemas.list import ListCreate, ListUpdate, ListResponse
+from app.models.user import User
+from app.schemas.list import ListCreate, ListResponse, ListUpdate
 from app.services.lists_service import ListService
 from app.utils.dependencies import get_current_active_user
-from app.models.user import User
 
 router = APIRouter(prefix="/lists", tags=["lists"])
 

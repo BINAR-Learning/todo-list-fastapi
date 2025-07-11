@@ -1,10 +1,12 @@
-from sqlalchemy.orm import Session
+import re
+from typing import Optional
+
 from fastapi import HTTPException, status
+from sqlalchemy.orm import Session
+
 from app.models.user import User
 from app.schemas.user import UserCreate
-from app.utils.security import get_password_hash, verify_password, generate_id
-from typing import Optional
-import re
+from app.utils.security import generate_id, get_password_hash, verify_password
 
 
 class AuthService:

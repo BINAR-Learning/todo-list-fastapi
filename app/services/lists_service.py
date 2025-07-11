@@ -1,10 +1,13 @@
-from sqlalchemy.orm import Session
+from typing import List as ListType
+from typing import Optional
+
 from fastapi import HTTPException, status
+from sqlalchemy.orm import Session
+
 from app.models.list import List
 from app.models.user import User
 from app.schemas.list import ListCreate, ListUpdate
 from app.utils.security import generate_id
-from typing import List as ListType, Optional
 
 
 class ListService:

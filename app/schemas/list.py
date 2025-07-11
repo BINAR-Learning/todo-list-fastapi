@@ -1,6 +1,9 @@
-from pydantic import BaseModel, Field
-from typing import Optional, List as ListType, TYPE_CHECKING
 from datetime import datetime
+from typing import TYPE_CHECKING
+from typing import List as ListType
+from typing import Optional
+
+from pydantic import BaseModel, Field
 
 if TYPE_CHECKING:
     from app.schemas.task import TaskResponse

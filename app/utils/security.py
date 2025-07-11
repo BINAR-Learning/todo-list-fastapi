@@ -1,9 +1,11 @@
-from passlib.context import CryptContext
-from jose import JWTError, jwt
+import uuid
 from datetime import datetime, timedelta
 from typing import Optional
+
+from jose import JWTError, jwt
+from passlib.context import CryptContext
+
 from app.config import settings
-import uuid
 
 # Password hashing context
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

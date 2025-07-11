@@ -1,11 +1,14 @@
-from sqlalchemy.orm import Session
+from typing import List as ListType
+from typing import Optional
+
 from fastapi import HTTPException, status
-from app.models.task import Task
+from sqlalchemy.orm import Session
+
 from app.models.list import List
+from app.models.task import Task
 from app.models.user import User
 from app.schemas.task import TaskCreate, TaskUpdate
 from app.utils.security import generate_id
-from typing import List as ListType, Optional
 
 
 class TaskService:

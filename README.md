@@ -315,9 +315,9 @@ pip install -r requirements-dev.txt
 # Setup pre-commit hooks (optional)
 pre-commit install
 
-# Run code formatting
+# Run code formatting (Black-compatible)
+isort --profile black app/
 black app/
-isort app/
 
 # Run linting
 flake8 app/
@@ -326,7 +326,36 @@ pylint app/
 # Run security scan
 bandit -r app/
 safety check
+
+# All-in-one quality check
+isort --profile black --check-only app/ && black --check app/ && flake8 app/
 ```
+
+### Konfigurasi Editor
+
+Untuk pengalaman development yang optimal, konfigurasikan editor Anda:
+
+**VS Code (`settings.json`)**:
+```json
+{
+    "python.formatting.provider": "black",
+    "python.sortImports.path": "isort",
+    "python.sortImports.args": ["--profile", "black"],
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true,
+    "[python]": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        }
+    }
+}
+```
+
+**PyCharm/IntelliJ**:
+- File → Settings → Tools → External Tools
+- Add isort: `isort --profile black $FilePath$`
+- Add Black: `black $FilePath$`
 
 ### Coverage Reporting
 

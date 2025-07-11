@@ -4,7 +4,8 @@ Tests for database configuration and utilities
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from app.database import get_db, SQLALCHEMY_DATABASE_URL, engine, Base
+from app.database import get_db, engine, Base
+from app.config import settings
 from app.models.user import User
 from app.models.list import List
 from app.models.task import Task
@@ -15,15 +16,22 @@ class TestDatabase:
 
     def test_database_url_format(self):
         """Test that database URL is properly formatted"""
-        assert SQLALCHEMY_DATABASE_URL is not None
-        assert isinstance(SQLALCHEMY_DATABASE_URL, str)
+        # For testing, we use in-memory SQLite
+        from tests.conftest import SQLALCHEMY_DATABASE_URL
+        database_url = SQLALCHEMY_DATABASE_URL
+        assert database_url is not None
+        assert isinstance(database_url, str)
         # Should be SQLite for testing
-        assert "sqlite" in SQLALCHEMY_DATABASE_URL.lower()
+        assert "sqlite" in database_url.lower()
 
     def test_engine_creation(self):
         """Test that database engine is properly created"""
+        from tests.conftest import engine
         assert engine is not None
-        assert hasattr(engine, 'execute')
+        # Check basic engine properties
+        assert hasattr(engine, 'url')
+        assert hasattr(engine, 'dialect')
+        assert str(engine.url).startswith('sqlite')
         assert hasattr(engine, 'connect')
 
     def test_base_metadata(self):

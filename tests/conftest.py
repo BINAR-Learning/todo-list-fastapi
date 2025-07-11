@@ -34,6 +34,27 @@ def create_test_app():
     app.include_router(auth.router, tags=["auth"])
     app.include_router(lists.router, tags=["lists"])
     app.include_router(tasks.router, tags=["tasks"])
+    
+    # Add root endpoints for testing
+    @app.get("/")
+    def read_root():
+        """Root endpoint"""
+        return {
+            "message": "Welcome to Todo List API - Test",
+            "version": "1.0.0",
+            "authentication": {
+                "bearer_token": "Use JWT token from /auth/login",
+                "basic_auth": "Use email:password for direct authentication"
+            },
+            "docs": "/docs",
+            "redoc": "/redoc"
+        }
+
+    @app.get("/health")
+    def health_check():
+        """Health check endpoint"""
+        return {"status": "healthy"}
+    
     return app
 
 

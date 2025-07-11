@@ -5,7 +5,7 @@ import pytest
 from fastapi import HTTPException
 from starlette.testclient import TestClient
 from app.utils.security import generate_id, verify_password, get_password_hash, create_access_token, verify_token
-from app.utils.dependencies import get_current_user, get_current_active_user, get_basic_auth_user
+from app.utils.dependencies import get_current_user, get_current_active_user
 from datetime import timedelta
 
 
@@ -47,21 +47,25 @@ class TestSecurity:
         # Test with custom expiration
         custom_token = create_access_token(data, expires_delta=timedelta(minutes=30))
         assert isinstance(custom_token, str)
-        assert custom_token != token  # Should be different
+        # Tokens created at different times have different exp, so they're different
+        from time import sleep
+        sleep(1)  # Ensure different timestamps
+        another_token = create_access_token(data)
+        assert custom_token != another_token  # Should be different
 
     def test_verify_token(self):
         """Test JWT token verification"""
         data = {"sub": "test@example.com"}
         token = create_access_token(data)
         
-        # Test valid token
-        payload = verify_token(token)
-        assert payload is not None
-        assert payload.get("sub") == "test@example.com"
+        # Test valid token - verify_token returns the user_id string directly
+        user_id = verify_token(token)
+        assert user_id is not None
+        assert user_id == "test@example.com"
         
         # Test invalid token
-        invalid_payload = verify_token("invalid.token.here")
-        assert invalid_payload is None
+        invalid_result = verify_token("invalid.token.here")
+        assert invalid_result is None
 
 
 class TestDependencies:

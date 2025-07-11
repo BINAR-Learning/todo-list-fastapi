@@ -18,3 +18,7 @@ class User(Base):
 
     # Relationship
     lists = relationship("List", back_populates="owner", cascade="all, delete-orphan")
+    
+    def __str__(self):
+        """String representation of user"""
+        return self.username if self.username else self.email

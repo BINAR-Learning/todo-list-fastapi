@@ -251,6 +251,161 @@ python test_api.py
    - **Bearer Token**: Masukkan JWT token dari login
    - **Basic Auth**: Masukkan email dan password langsung
 
+## Testing
+
+Proyek ini dilengkapi dengan comprehensive test suite menggunakan pytest.
+
+### Setup Testing Environment
+
+Testing dependencies sudah termasuk dalam `requirements.txt`:
+- `pytest` - Test framework
+- `pytest-asyncio` - Async test support
+- `pytest-cov` - Coverage reporting
+- `httpx` - Async HTTP client untuk testing
+
+### Running Tests
+
+#### Quick Start
+
+```bash
+# Run all tests
+pytest
+
+# Run with verbose output
+pytest -v
+
+# Run with coverage report
+pytest --cov=app --cov-report=term-missing
+```
+
+#### Using Test Runner Scripts
+
+**Windows:**
+```cmd
+# Run all tests
+run_tests.bat
+
+# Run specific test categories
+run_tests.bat unit
+run_tests.bat routes
+run_tests.bat integration
+run_tests.bat auth
+run_tests.bat models
+run_tests.bat coverage
+```
+
+**Linux/Mac:**
+```bash
+# Make script executable
+chmod +x run_tests.sh
+
+# Run all tests
+./run_tests.sh
+
+# Run specific test categories
+./run_tests.sh unit
+./run_tests.sh routes
+./run_tests.sh integration
+./run_tests.sh auth
+./run_tests.sh models
+./run_tests.sh coverage
+```
+
+#### Test Categories
+
+- **Unit Tests**: `tests/test_models_*.py`, `tests/test_services_*.py`
+  - Model validation and relationships
+  - Service layer business logic
+  - Authentication service
+
+- **Route Tests**: `tests/test_routes_*.py`
+  - API endpoint functionality
+  - Authentication and authorization
+  - Request/response validation
+
+- **Integration Tests**: `tests/test_integration.py`
+  - End-to-end workflows
+  - Multi-user scenarios
+  - Error handling
+
+### Test Structure
+
+```
+tests/
+├── __init__.py
+├── conftest.py                    # Test configuration and fixtures
+├── test_models_user.py           # User model tests
+├── test_models_todo_list.py      # TodoList model tests
+├── test_models_task.py           # Task model tests
+├── test_services_auth.py         # Authentication service tests
+├── test_routes_auth.py           # Authentication endpoint tests
+├── test_routes_lists.py          # Todo lists endpoint tests
+├── test_routes_tasks.py          # Tasks endpoint tests
+└── test_integration.py           # Integration and workflow tests
+```
+
+### Test Features
+
+- **Isolated Testing**: Each test uses fresh in-memory SQLite database
+- **Async Support**: Full async/await support for FastAPI testing
+- **Authentication Testing**: Both Bearer token and Basic auth testing
+- **User Isolation**: Tests verify users cannot access each other's data
+- **Error Handling**: Comprehensive error scenario testing
+- **Coverage Reporting**: Code coverage analysis with HTML reports
+
+### Coverage Reports
+
+Generate coverage reports:
+
+```bash
+# Terminal coverage report
+pytest --cov=app --cov-report=term-missing
+
+# HTML coverage report
+pytest --cov=app --cov-report=html:htmlcov
+
+# Open HTML report (Windows)
+start htmlcov/index.html
+
+# Open HTML report (Linux/Mac)
+open htmlcov/index.html
+```
+
+### Running Specific Tests
+
+```bash
+# Run authentication tests only
+pytest tests/test_routes_auth.py tests/test_services_auth.py -v
+
+# Run model tests only
+pytest tests/test_models_*.py -v
+
+# Run single test file
+pytest tests/test_integration.py -v
+
+# Run single test method
+pytest tests/test_routes_auth.py::TestAuthRoutes::test_register_user_success -v
+
+# Run tests matching pattern
+pytest -k "test_create" -v
+```
+
+### Test Configuration
+
+Test configuration is in `pytest.ini`:
+- Uses `tests/` directory for test discovery
+- Async mode enabled
+- Coverage settings configured
+- Custom markers for test categorization
+
+### Continuous Integration
+
+Tests are designed to run in CI/CD environments:
+- No external dependencies (uses in-memory database)
+- Environment variable support
+- Exit codes for success/failure
+- Multiple output formats
+
 ## Database Migration
 
 Jika Anda mengupgrade dari versi sebelumnya, jalankan migration script:

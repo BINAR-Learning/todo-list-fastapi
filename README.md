@@ -5,6 +5,7 @@
 ![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.104.1-green.svg)
 ![Test Coverage](https://img.shields.io/badge/coverage-91%25-brightgreen.svg)
+![Codecov](https://codecov.io/github/BINAR-Learning/todo-list-fastapi/branch/main/graph/badge.svg?token=a8810a36-5998-46fa-a7cb-468f76d8b997)
 
 API RESTful untuk mengelola daftar tugas dan tugas-tugas di dalamnya, dibangun dengan FastAPI dan Python.
 
@@ -272,6 +273,7 @@ Proyek ini menggunakan GitHub Actions untuk automasi CI/CD pipeline yang kompreh
   - Unit testing dengan coverage minimum 90%
   - Upload coverage reports ke Codecov
   - Generate coverage badge
+  - Automated coverage status checks
 
 #### 2. CI/CD Pipeline (`ci-cd.yml`)
 - **Security Scan**: Bandit dan Safety check untuk vulnerability
@@ -324,6 +326,21 @@ pylint app/
 # Run security scan
 bandit -r app/
 safety check
+```
+
+### Coverage Reporting
+
+Proyek ini terintegrasi dengan Codecov untuk analisis coverage yang mendalam:
+
+```bash
+# Generate coverage dengan upload ke Codecov (otomatis di CI)
+pytest --cov=app --cov-report=xml --cov-report=html --cov-fail-under=90
+
+# View detailed coverage report
+open htmlcov/index.html  # Local HTML report
+
+# Codecov dashboard untuk analisis lanjutan:
+# https://codecov.io/github/BINAR-Learning/todo-list-fastapi
 ```
 
 ### Running Tests Locally

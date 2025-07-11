@@ -1,0 +1,44 @@
+# Codecov Configuration
+# https://docs.codecov.io/docs/codecov-yaml
+
+coverage:
+  status:
+    project:
+      default:
+        target: 90%
+        threshold: 1%
+        informational: false
+    patch:
+      default:
+        target: 90%
+        threshold: 1%
+        informational: false
+
+comment:
+  layout: "reach,diff,flags,tree,reach"
+  behavior: default
+  require_changes: false
+  require_base: false
+  require_head: true
+  branches:
+    - main
+    - develop
+
+github_checks:
+  annotations: true
+
+flags:
+  unittests:
+    paths:
+      - app/
+  integration:
+    paths:
+      - app/
+
+ignore:
+  - "tests/"
+  - "**/__pycache__/"
+  - "**/migrations/"
+  - "frontend/"
+  - "htmlcov/"
+  - ".github/"

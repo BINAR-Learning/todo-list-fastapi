@@ -127,6 +127,17 @@ jobs:
           coverage.xml
           htmlcov/
 
+    - name: Upload coverage to Codecov
+      if: matrix.python-version == '3.12'
+      uses: codecov/codecov-action@v4
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./coverage.xml
+        flags: integration
+        name: codecov-ci-cd
+        fail_ci_if_error: false
+        verbose: true
+
     # Coverage comment on PR disabled temporarily
     # - name: Comment coverage on PR
     #   if: github.event_name == 'pull_request' && matrix.python-version == '3.12'

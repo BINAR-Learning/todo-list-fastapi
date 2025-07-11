@@ -29,7 +29,7 @@ app = FastAPI(
     """,
     version="1.0.0",
     docs_url="/docs",
-    redoc_url="/redoc"
+    redoc_url="/redoc",
 )
 
 # Add CORS middleware
@@ -57,10 +57,10 @@ def read_root():
         "version": "1.0.0",
         "authentication": {
             "bearer_token": "Use JWT token from /v1/auth/login",
-            "basic_auth": "Use email:password for direct authentication"
+            "basic_auth": "Use email:password for direct authentication",
         },
         "docs": "/docs",
-        "redoc": "/redoc"
+        "redoc": "/redoc",
     }
 
 
@@ -74,9 +74,5 @@ def health_check():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(
-        "app.main:app", 
-        host="0.0.0.0", 
-        port=3000, 
-        reload=settings.debug
-    )
+
+    uvicorn.run("app.main:app", host="0.0.0.0", port=3000, reload=settings.debug)

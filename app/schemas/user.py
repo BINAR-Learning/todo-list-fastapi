@@ -5,25 +5,31 @@ import re
 
 
 class UserCreate(BaseModel):
-    username: Optional[str] = Field(None, description="Nama pengguna unik (opsional)", example="userbaru")
-    email: EmailStr = Field(..., description="Alamat email yang valid", example="user@example.com")
-    password: str = Field(..., description="Kata sandi pengguna", example="StrongPass123!")
+    username: Optional[str] = Field(
+        None, description="Nama pengguna unik (opsional)", example="userbaru"
+    )
+    email: EmailStr = Field(
+        ..., description="Alamat email yang valid", example="user@example.com"
+    )
+    password: str = Field(
+        ..., description="Kata sandi pengguna", example="StrongPass123!"
+    )
 
-    @validator('password')
+    @validator("password")
     def validate_password(cls, v):
         if len(v) < 10:
-            raise ValueError('Password must be at least 10 characters long')
-        
+            raise ValueError("Password must be at least 10 characters long")
+
         # Check for alphanumeric and special character
-        if not re.search(r'[A-Za-z]', v):
-            raise ValueError('Password must contain at least one letter')
-        
-        if not re.search(r'\d', v):
-            raise ValueError('Password must contain at least one digit')
-        
+        if not re.search(r"[A-Za-z]", v):
+            raise ValueError("Password must contain at least one letter")
+
+        if not re.search(r"\d", v):
+            raise ValueError("Password must contain at least one digit")
+
         if not re.search(r'[!@#$%^&*(),.?":{}|<>]', v):
-            raise ValueError('Password must contain at least one special character')
-        
+            raise ValueError("Password must contain at least one special character")
+
         return v
 
 
@@ -34,6 +40,7 @@ class UserLogin(BaseModel):
 
 class UserLoginUsername(BaseModel):
     """Login with username for backward compatibility"""
+
     username: str = Field(..., description="Nama pengguna", example="userbaru")
     password: str = Field(..., description="Kata sandi", example="StrongPass123!")
 

@@ -1,6 +1,35 @@
 # GitHub Actions Issues Fixed
 
-## ✅ Latest Fix: Python Version Compatibility (2025-07-11)
+## ✅ Latest Fix: pytest-asyncio Compatibility (2025-07-11)
+
+### 🐛 **Issue**: 
+```
+AttributeError: 'Package' object has no attribute 'obj'
+```
+
+### 🔧 **Root Cause**: 
+Incompatibility between pytest 8.0.0 and pytest-asyncio 0.23.2 causing internal pytest errors in CI environment.
+
+### ✅ **Solutions Applied**:
+
+1. **Dependency Version Rollback**:
+   - pytest: `8.0.0` → `7.4.4`
+   - pytest-asyncio: `0.23.2` → `0.21.1` 
+   - pytest-cov: `6.2.1` → `4.0.0`
+   - email-validator: `2.1.0` → `2.2.0` (avoid yanked version)
+
+2. **Updated Both Requirements Files**:
+   - ✅ `requirements.txt`
+   - ✅ `requirements-dev.txt`
+
+3. **Local Validation**:
+   - ✅ 103 tests passing
+   - ✅ 91% coverage maintained
+   - ✅ No compatibility errors
+
+---
+
+## ✅ Previous Fix: Python Version Compatibility (2025-07-11)
 
 ### 🐛 **Issue**: 
 ```

@@ -10,7 +10,20 @@ pydantic[email]==2.5.0
 pydantic-settings==2.1.0
 python-dotenv==1.0.0
 email-validator==2.1.0
+
+# Testing dependencies
 pytest==8.0.0
 pytest-asyncio==0.23.2
 pytest-cov==6.2.1
 httpx==0.25.2
+
+# Development and CI dependencies (optional)
+# Uncomment for local development
+# black==23.12.1
+# isort==5.13.2
+# flake8==7.0.0
+# mypy==1.8.0
+# pylint==3.0.3
+# bandit==1.7.5
+# safety==2.3.5
+# coverage-badge==1.1.0

@@ -1,5 +1,11 @@
 # Todo List API
 
+![Unit Tests](https://github.com/BINAR-Learning/todo-list-fastapi/workflows/Unit%20Tests/badge.svg)
+![CI/CD Pipeline](https://github.com/BINAR-Learning/todo-list-fastapi/workflows/CI/CD%20Pipeline/badge.svg)
+![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.104.1-green.svg)
+![Test Coverage](https://img.shields.io/badge/coverage-91%25-brightgreen.svg)
+
 API RESTful untuk mengelola daftar tugas dan tugas-tugas di dalamnya, dibangun dengan FastAPI dan Python.
 
 ## Fitur
@@ -251,160 +257,88 @@ python test_api.py
    - **Bearer Token**: Masukkan JWT token dari login
    - **Basic Auth**: Masukkan email dan password langsung
 
-## Testing
+## Continuous Integration & Deployment (CI/CD)
 
-Proyek ini dilengkapi dengan comprehensive test suite menggunakan pytest.
+Proyek ini menggunakan GitHub Actions untuk automasi CI/CD pipeline yang komprehensif.
 
-### Setup Testing Environment
+### Workflows yang Tersedia
 
-Testing dependencies sudah termasuk dalam `requirements.txt`:
-- `pytest` - Test framework
-- `pytest-asyncio` - Async test support
-- `pytest-cov` - Coverage reporting
-- `httpx` - Async HTTP client untuk testing
+#### 1. Unit Tests (`test.yml`)
+- **Trigger**: Setiap push dan pull request ke branch `main` dan `develop`
+- **Matrix Testing**: Python 3.9, 3.10, 3.11, 3.12
+- **Features**:
+  - Dependency caching untuk performa optimal
+  - Code linting dengan flake8
+  - Unit testing dengan coverage minimum 90%
+  - Upload coverage reports ke Codecov
+  - Generate coverage badge
 
-### Running Tests
+#### 2. CI/CD Pipeline (`ci-cd.yml`)
+- **Security Scan**: Bandit dan Safety check untuk vulnerability
+- **Code Quality**: Black, isort, MyPy, dan PyLint
+- **Integration Tests**: Test API endpoints secara real-time
+- **Coverage Reports**: Detailed coverage analysis
 
-#### Quick Start
+#### 3. Release Automation (`release.yml`)
+- **Trigger**: Pada tag version (v*.*.*)
+- **Features**:
+  - Full test suite execution
+  - Documentation generation
+  - Automatic changelog creation
+  - GitHub release creation
+  - Coverage report attachment
+
+#### 4. Dependency Check (`dependency-check.yml`)
+- **Schedule**: Setiap Senin pukul 9 AM UTC
+- **Features**:
+  - Vulnerability scanning dengan pip-audit
+  - Outdated packages detection
+  - Security reports generation
+
+### Status Badges
+
+Pipeline status dapat dilihat melalui badges di bagian atas README:
+- **Unit Tests**: Status testing terbaru
+- **CI/CD Pipeline**: Status build dan deployment
+- **Test Coverage**: Persentase coverage (target: >90%)
+
+### Development Tools
+
+Untuk development lokal dengan code quality tools:
 
 ```bash
-# Run all tests
-pytest
+# Install development dependencies
+pip install -r requirements-dev.txt
 
-# Run with verbose output
-pytest -v
+# Setup pre-commit hooks (optional)
+pre-commit install
 
-# Run with coverage report
-pytest --cov=app --cov-report=term-missing
+# Run code formatting
+black app/
+isort app/
+
+# Run linting
+flake8 app/
+pylint app/
+
+# Run security scan
+bandit -r app/
+safety check
 ```
 
-#### Using Test Runner Scripts
+### Running Tests Locally
 
-**Windows:**
-```cmd
-# Run all tests
-run_tests.bat
+```bash
+# Run all tests dengan coverage
+pytest --cov=app --cov-report=html --cov-fail-under=90
 
 # Run specific test categories
-run_tests.bat unit
-run_tests.bat routes
-run_tests.bat integration
-run_tests.bat auth
-run_tests.bat models
-run_tests.bat coverage
-```
-
-**Linux/Mac:**
-```bash
-# Make script executable
-chmod +x run_tests.sh
-
-# Run all tests
-./run_tests.sh
-
-# Run specific test categories
-./run_tests.sh unit
-./run_tests.sh routes
-./run_tests.sh integration
-./run_tests.sh auth
-./run_tests.sh models
-./run_tests.sh coverage
-```
-
-#### Test Categories
-
-- **Unit Tests**: `tests/test_models_*.py`, `tests/test_services_*.py`
-  - Model validation and relationships
-  - Service layer business logic
-  - Authentication service
-
-- **Route Tests**: `tests/test_routes_*.py`
-  - API endpoint functionality
-  - Authentication and authorization
-  - Request/response validation
-
-- **Integration Tests**: `tests/test_integration.py`
-  - End-to-end workflows
-  - Multi-user scenarios
-  - Error handling
-
-### Test Structure
-
-```
-tests/
-├── __init__.py
-├── conftest.py                    # Test configuration and fixtures
-├── test_models_user.py           # User model tests
-├── test_models_todo_list.py      # TodoList model tests
-├── test_models_task.py           # Task model tests
-├── test_services_auth.py         # Authentication service tests
-├── test_routes_auth.py           # Authentication endpoint tests
-├── test_routes_lists.py          # Todo lists endpoint tests
-├── test_routes_tasks.py          # Tasks endpoint tests
-└── test_integration.py           # Integration and workflow tests
-```
-
-### Test Features
-
-- **Isolated Testing**: Each test uses fresh in-memory SQLite database
-- **Async Support**: Full async/await support for FastAPI testing
-- **Authentication Testing**: Both Bearer token and Basic auth testing
-- **User Isolation**: Tests verify users cannot access each other's data
-- **Error Handling**: Comprehensive error scenario testing
-- **Coverage Reporting**: Code coverage analysis with HTML reports
-
-### Coverage Reports
-
-Generate coverage reports:
-
-```bash
-# Terminal coverage report
-pytest --cov=app --cov-report=term-missing
-
-# HTML coverage report
-pytest --cov=app --cov-report=html:htmlcov
-
-# Open HTML report (Windows)
-start htmlcov/index.html
-
-# Open HTML report (Linux/Mac)
-open htmlcov/index.html
-```
-
-### Running Specific Tests
-
-```bash
-# Run authentication tests only
-pytest tests/test_routes_auth.py tests/test_services_auth.py -v
-
-# Run model tests only
-pytest tests/test_models_*.py -v
-
-# Run single test file
+pytest tests/test_routes_auth.py -v
 pytest tests/test_integration.py -v
 
-# Run single test method
-pytest tests/test_routes_auth.py::TestAuthRoutes::test_register_user_success -v
-
-# Run tests matching pattern
-pytest -k "test_create" -v
+# Parallel test execution (dengan pytest-xdist)
+pytest -n auto --cov=app
 ```
-
-### Test Configuration
-
-Test configuration is in `pytest.ini`:
-- Uses `tests/` directory for test discovery
-- Async mode enabled
-- Coverage settings configured
-- Custom markers for test categorization
-
-### Continuous Integration
-
-Tests are designed to run in CI/CD environments:
-- No external dependencies (uses in-memory database)
-- Environment variable support
-- Exit codes for success/failure
-- Multiple output formats
 
 ## Database Migration
 
@@ -526,3 +460,4 @@ New tools have been introduced to streamline testing, database management, and c
 * **Linting and Code Quality Tools:** Integrated **linting and code quality tools** to maintain high coding standards and reduce errors.
 
 ---
+

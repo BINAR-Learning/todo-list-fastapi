@@ -1,0 +1,47 @@
+name: Dependency Check
+
+on:
+  schedule:
+    # Run every Monday at 9 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+jobs:
+  dependency-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    - name: Install pip-audit
+      run: |
+        python -m pip install --upgrade pip
+        pip install pip-audit
+
+    - name: Run pip-audit
+      run: |
+        pip-audit --desc --output=json --format=json > vulnerability-report.json || true
+        pip-audit --desc
+
+    - name: Upload vulnerability report
+      uses: actions/upload-artifact@v3
+      with:
+        name: vulnerability-report
+        path: vulnerability-report.json
+
+    - name: Check for outdated packages
+      run: |
+        pip install -r requirements.txt
+        pip list --outdated --format=json > outdated-packages.json
+        pip list --outdated
+
+    - name: Upload outdated packages report
+      uses: actions/upload-artifact@v3
+      with:
+        name: outdated-packages
+        path: outdated-packages.json

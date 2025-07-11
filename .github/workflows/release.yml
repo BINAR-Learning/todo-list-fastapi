@@ -1,0 +1,73 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run full test suite
+      run: |
+        pytest --cov=app --cov-report=xml --cov-report=html --cov-fail-under=90 -v
+
+    - name: Build documentation
+      run: |
+        pip install mkdocs mkdocs-material
+        # Create basic docs structure if not exists
+        mkdir -p docs
+        echo "# Todo List API Documentation" > docs/index.md
+        echo "## Overview" >> docs/index.md
+        echo "This is the documentation for the Todo List API." >> docs/index.md
+        echo "" >> docs/index.md
+        echo "## Testing" >> docs/index.md
+        cat TESTING.md >> docs/index.md
+
+    - name: Generate changelog
+      id: changelog
+      run: |
+        # Extract version from tag
+        VERSION=${GITHUB_REF#refs/tags/}
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        
+        # Generate changelog
+        echo "## Changes in $VERSION" > CHANGELOG.md
+        git log --pretty=format:"* %s" $(git describe --tags --abbrev=0 HEAD^)..HEAD >> CHANGELOG.md || echo "* Initial release" >> CHANGELOG.md
+
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ steps.changelog.outputs.version }}
+        body_path: CHANGELOG.md
+        draft: false
+        prerelease: false
+
+    - name: Upload coverage report
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./htmlcov
+        asset_name: coverage-report.zip
+        asset_content_type: application/zip
